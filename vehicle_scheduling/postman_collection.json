@@ -1,0 +1,107 @@
+{
+  "info": {
+    "name": "Vehicle Maintenance Scheduler API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1" },
+    { "key": "bearerToken", "value": "your_bearer_token_here" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health",
+        "description": "Returns service health status"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "status": "OK",
+          "code": 200,
+          "body": "{\"status\":\"ok\",\"service\":\"vehicle-maintenance-scheduler\",\"timestamp\":\"2026-05-02T10:00:00.000Z\"}"
+        }
+      ]
+    },
+    {
+      "name": "Get Schedule — Depot 1",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/schedule/1",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
+        "description": "Compute optimal maintenance schedule for depot ID 1 (60 mechanic hours)"
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "status": "OK",
+          "code": 200,
+          "body": "{\"success\":true,\"data\":{\"depotId\":1,\"mechanicHours\":60,\"selectedTasks\":[{\"TaskID\":\"264e638f-1c7a-4d67-9f9c-53f3d1766d37\",\"Duration\":1,\"Impact\":5}],\"totalImpact\":120,\"totalDuration\":58,\"remainingHours\":2},\"timestamp\":\"2026-05-02T10:00:00.000Z\"}"
+        }
+      ]
+    },
+    {
+      "name": "Get Schedule — Depot 2",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/schedule/2",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
+        "description": "Depot 2 has 135 mechanic hours"
+      }
+    },
+    {
+      "name": "Get Schedule — Depot 3",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/schedule/3",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
+        "description": "Depot 3 has 188 mechanic hours"
+      }
+    },
+    {
+      "name": "Get Schedule — Invalid Depot",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/schedule/abc",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
+        "description": "Should return 400 Bad Request"
+      },
+      "response": [
+        {
+          "name": "400 Bad Request",
+          "status": "Bad Request",
+          "code": 400,
+          "body": "{\"success\":false,\"error\":\"Invalid depotId: \\\"abc\\\". Must be a positive integer.\",\"statusCode\":400,\"timestamp\":\"2026-05-02T10:00:00.000Z\"}"
+        }
+      ]
+    },
+    {
+      "name": "Get Schedule — Non-existent Depot",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/schedule/999",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{bearerToken}}" }
+        ],
+        "description": "Should return 404 Not Found"
+      },
+      "response": [
+        {
+          "name": "404 Not Found",
+          "status": "Not Found",
+          "code": 404,
+          "body": "{\"success\":false,\"error\":\"Depot with ID 999 not found\",\"statusCode\":404,\"timestamp\":\"2026-05-02T10:00:00.000Z\"}"
+        }
+      ]
+    }
+  ]
+}
